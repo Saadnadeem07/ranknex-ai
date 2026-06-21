@@ -26,11 +26,17 @@ export const metadata: Metadata = {
   },
 };
 
+// Render on-demand so the page never tries to reach the database at build time.
+export const dynamic = "force-dynamic";
+
 export default async function CaseStudiesPage() {
-  const studiesRaw = await prisma.caseStudy.findMany({
-    where: { published: true },
-    orderBy: { createdAt: "desc" },
-  });
+  // Fall back to an empty state if the database is unavailable.
+  const studiesRaw = await prisma.caseStudy
+    .findMany({
+      where: { published: true },
+      orderBy: { createdAt: "desc" },
+    })
+    .catch(() => []);
 
   const caseStudies: CaseStudy[] = studiesRaw.map((study) => ({
     ...study,

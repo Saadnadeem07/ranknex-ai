@@ -12,12 +12,17 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+// Render on-demand so the page never tries to reach the database at build time.
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = await prisma.blogPost.findUnique({
-    where: { slug },
-    include: { category: true },
-  });
+  const post = await prisma.blogPost
+    .findUnique({
+      where: { slug },
+      include: { category: true },
+    })
+    .catch(() => null);
 
   if (!post || post.status !== "PUBLISHED") {
     return {
@@ -47,26 +52,30 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params;
-  const post = await prisma.blogPost.findUnique({
-    where: { slug },
-    include: { category: true },
-  });
+  const post = await prisma.blogPost
+    .findUnique({
+      where: { slug },
+      include: { category: true },
+    })
+    .catch(() => null);
 
   if (!post || post.status !== "PUBLISHED") {
     notFound();
   }
 
   // Fetch related posts (same category, excluding this one)
-  const relatedPosts = await prisma.blogPost.findMany({
-    where: {
-      status: "PUBLISHED",
-      categoryId: post.categoryId,
-      NOT: { id: post.id },
-    },
-    include: { category: true },
-    orderBy: { createdAt: "desc" },
-    take: 3,
-  });
+  const relatedPosts = await prisma.blogPost
+    .findMany({
+      where: {
+        status: "PUBLISHED",
+        categoryId: post.categoryId,
+        NOT: { id: post.id },
+      },
+      include: { category: true },
+      orderBy: { createdAt: "desc" },
+      take: 3,
+    })
+    .catch(() => []);
 
   const shareUrl = `https://ranknexai.com/blog/${post.slug}`;
   const timeToRead = readingTime(post.content);

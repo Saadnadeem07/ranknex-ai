@@ -27,32 +27,42 @@ export const metadata: Metadata = {
   },
 };
 
+// Render on-demand so the page never tries to reach the database at build time.
+export const dynamic = "force-dynamic";
+
 export default async function BlogPage() {
-  // Fetch initial posts (Page 1, limit 9)
-  const postsRaw = await prisma.blogPost.findMany({
-    where: { status: "PUBLISHED" },
-    include: { category: true },
-    orderBy: { createdAt: "desc" },
-    take: 9,
-  });
+  // Fetch initial posts (Page 1, limit 9). Fall back to an empty state if the
+  // database is unavailable (e.g. before one is connected in production).
+  const postsRaw = await prisma.blogPost
+    .findMany({
+      where: { status: "PUBLISHED" },
+      include: { category: true },
+      orderBy: { createdAt: "desc" },
+      take: 9,
+    })
+    .catch(() => []);
 
   // Fetch categories with post count
-  const categoriesRaw = await prisma.blogCategory.findMany({
-    include: {
-      _count: {
-        select: {
-          posts: {
-            where: { status: "PUBLISHED" },
+  const categoriesRaw = await prisma.blogCategory
+    .findMany({
+      include: {
+        _count: {
+          select: {
+            posts: {
+              where: { status: "PUBLISHED" },
+            },
           },
         },
       },
-    },
-    orderBy: { name: "asc" },
-  });
+      orderBy: { name: "asc" },
+    })
+    .catch(() => []);
 
-  const total = await prisma.blogPost.count({
-    where: { status: "PUBLISHED" },
-  });
+  const total = await prisma.blogPost
+    .count({
+      where: { status: "PUBLISHED" },
+    })
+    .catch(() => 0);
 
   // Serialize dates for Next.js boundary passing
   const initialPosts: BlogPost[] = postsRaw.map((post) => ({
