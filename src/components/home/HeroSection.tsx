@@ -15,7 +15,7 @@ export default function HeroSection() {
     <section className="relative min-h-[100svh] overflow-hidden pt-28 pb-20 md:pt-36 md:pb-28">
       {/* Background layers */}
       <div className="absolute inset-0 gradient-bg" />
-      <ParticleBackground particleCount={60} connectionDistance={100} />
+      <ParticleBackground particleCount={36} connectionDistance={110} />
       <GradientOrbs
         orbs={[
           { color: 'teal', size: 500, top: '-15%', right: '-10%', delay: 0 },

@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 
 interface OrbConfig {
   color: 'teal' | 'cyan' | 'navy';
@@ -23,6 +23,8 @@ const defaultOrbs: OrbConfig[] = [
 ];
 
 export default function GradientOrbs({ orbs = defaultOrbs }: GradientOrbsProps) {
+  const reduce = useReducedMotion();
+
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 0 }}>
       {orbs.map((orb, index) => (
@@ -36,13 +38,14 @@ export default function GradientOrbs({ orbs = defaultOrbs }: GradientOrbsProps) 
             left: orb.left,
             right: orb.right,
             bottom: orb.bottom,
+            // Promote to its own compositor layer; translateY then never
+            // re-rasterizes the (expensive) blur.
+            willChange: 'transform',
           }}
-          animate={{
-            y: [0, -30, 0],
-            scale: [1, 1.05, 1],
-          }}
+          // Translate only — no scale — so the blur is never re-rendered.
+          animate={reduce ? undefined : { y: [0, -24, 0] }}
           transition={{
-            duration: 8,
+            duration: 9,
             delay: orb.delay || 0,
             repeat: Infinity,
             ease: 'easeInOut',
