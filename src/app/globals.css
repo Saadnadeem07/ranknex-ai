@@ -1,0 +1,554 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy-950: #0a0e1a;
+  --color-navy-900: #0A1628;
+  --color-navy-800: #0D2137;
+  --color-navy-700: #1e2d52;
+  --color-navy-600: #2a3f6e;
+  --color-teal-500: #00C9A7;
+  --color-teal-400: #00e6bf;
+  --color-teal-600: #00a88c;
+  --color-cyan-400: #22d3ee;
+  --color-cyan-500: #06b6d4;
+  --color-amber-500: #f59e0b;
+  --color-amber-400: #fbbf24;
+  --color-slate-300: #B0BEC5;
+  --color-slate-400: #94a3b8;
+  --color-slate-500: #64748b;
+  
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-navy-950);
+  color: var(--color-slate-300);
+  overflow-x: hidden;
+  line-height: 1.7;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+a {
+  color: var(--color-teal-500);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--color-teal-400);
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-navy-950);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-navy-700);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-teal-500);
+}
+
+/* ============================================
+   SELECTION
+   ============================================ */
+
+::selection {
+  background: var(--color-teal-500);
+  color: white;
+}
+
+/* ============================================
+   ANIMATED GRADIENT BACKGROUND
+   ============================================ */
+
+.gradient-bg {
+  background: linear-gradient(
+    135deg,
+    var(--color-navy-950) 0%,
+    var(--color-navy-900) 25%,
+    #0c1f35 50%,
+    var(--color-navy-900) 75%,
+    var(--color-navy-950) 100%
+  );
+}
+
+.gradient-bg-alt {
+  background: linear-gradient(
+    180deg,
+    var(--color-navy-950) 0%,
+    var(--color-navy-800) 50%,
+    var(--color-navy-950) 100%
+  );
+}
+
+/* ============================================
+   GLOW EFFECTS
+   ============================================ */
+
+.glow-teal {
+  box-shadow: 0 0 20px rgba(0, 201, 167, 0.15),
+              0 0 60px rgba(0, 201, 167, 0.05);
+}
+
+.glow-teal-strong {
+  box-shadow: 0 0 30px rgba(0, 201, 167, 0.25),
+              0 0 80px rgba(0, 201, 167, 0.1);
+}
+
+.text-glow {
+  text-shadow: 0 0 40px rgba(0, 201, 167, 0.3);
+}
+
+/* ============================================
+   GLASSMORPHISM
+   ============================================ */
+
+.glass {
+  background: rgba(13, 33, 55, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-strong {
+  background: rgba(13, 33, 55, 0.8);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================
+   GRADIENT TEXT
+   ============================================ */
+
+.gradient-text {
+  background: linear-gradient(135deg, #ffffff 0%, var(--color-teal-500) 50%, var(--color-cyan-400) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-teal {
+  background: linear-gradient(135deg, var(--color-teal-500) 0%, var(--color-cyan-400) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 2rem;
+  background: linear-gradient(135deg, var(--color-teal-500) 0%, var(--color-teal-600) 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  border-radius: 0.75rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.025em;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--color-teal-400) 0%, var(--color-teal-500) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 201, 167, 0.3);
+}
+
+.btn-primary:hover::before {
+  opacity: 1;
+}
+
+.btn-primary span, .btn-primary svg {
+  position: relative;
+  z-index: 1;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 2rem;
+  background: transparent;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  letter-spacing: 0.025em;
+}
+
+.btn-secondary:hover {
+  border-color: var(--color-teal-500);
+  background: rgba(0, 201, 167, 0.08);
+  transform: translateY(-2px);
+  color: white;
+}
+
+/* ============================================
+   CARD STYLES
+   ============================================ */
+
+.card {
+  background: rgba(13, 33, 55, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  padding: 2rem;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover {
+  border-color: rgba(0, 201, 167, 0.2);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
+              0 0 30px rgba(0, 201, 167, 0.08);
+}
+
+.card-glass {
+  background: rgba(13, 33, 55, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 1rem;
+  padding: 2rem;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-glass:hover {
+  border-color: rgba(0, 201, 167, 0.15);
+  background: rgba(13, 33, 55, 0.6);
+  transform: translateY(-2px);
+}
+
+/* ============================================
+   SECTION STYLES
+   ============================================ */
+
+.section {
+  padding: 6rem 0;
+  position: relative;
+}
+
+.section-alt {
+  background: linear-gradient(180deg, 
+    rgba(13, 33, 55, 0.3) 0%, 
+    rgba(13, 33, 55, 0.5) 50%, 
+    rgba(13, 33, 55, 0.3) 100%
+  );
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ============================================
+   WAVE DIVIDERS
+   ============================================ */
+
+.wave-divider {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.wave-divider svg {
+  display: block;
+  width: 100%;
+  height: 60px;
+}
+
+/* ============================================
+   PARTICLE CANVAS
+   ============================================ */
+
+.particle-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ============================================
+   FLOATING ANIMATIONS
+   ============================================ */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(2deg); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 8s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 6s ease infinite;
+}
+
+/* ============================================
+   GRADIENT ORBS (Background Decoration)
+   ============================================ */
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+.orb-teal {
+  background: radial-gradient(circle, var(--color-teal-500), transparent);
+}
+
+.orb-cyan {
+  background: radial-gradient(circle, var(--color-cyan-400), transparent);
+}
+
+.orb-navy {
+  background: radial-gradient(circle, var(--color-navy-600), transparent);
+}
+
+/* ============================================
+   ADMIN STYLES
+   ============================================ */
+
+.admin-sidebar {
+  background: var(--color-navy-900);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.admin-content {
+  background: var(--color-navy-950);
+}
+
+/* ============================================
+   TIPTAP EDITOR STYLES
+   ============================================ */
+
+.tiptap-editor .ProseMirror {
+  min-height: 400px;
+  padding: 1.5rem;
+  outline: none;
+  color: var(--color-slate-300);
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.tiptap-editor .ProseMirror h1,
+.tiptap-editor .ProseMirror h2,
+.tiptap-editor .ProseMirror h3 {
+  color: white;
+  margin: 1.5rem 0 0.75rem;
+}
+
+.tiptap-editor .ProseMirror h1 { font-size: 1.75rem; }
+.tiptap-editor .ProseMirror h2 { font-size: 1.5rem; }
+.tiptap-editor .ProseMirror h3 { font-size: 1.25rem; }
+
+.tiptap-editor .ProseMirror p {
+  margin-bottom: 1rem;
+}
+
+.tiptap-editor .ProseMirror ul,
+.tiptap-editor .ProseMirror ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.tiptap-editor .ProseMirror blockquote {
+  border-left: 3px solid var(--color-teal-500);
+  padding-left: 1rem;
+  margin-left: 0;
+  color: var(--color-slate-400);
+  font-style: italic;
+}
+
+.tiptap-editor .ProseMirror code {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.tiptap-editor .ProseMirror pre {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  overflow-x: auto;
+}
+
+.tiptap-editor .ProseMirror a {
+  color: var(--color-teal-500);
+  text-decoration: underline;
+}
+
+.tiptap-editor .ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+}
+
+.tiptap-editor .ProseMirror .is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--color-slate-500);
+  pointer-events: none;
+  height: 0;
+}
+
+/* ============================================
+   BLOG CONTENT STYLES
+   ============================================ */
+
+.blog-content h1 { font-size: 2rem; margin: 2rem 0 1rem; color: white; }
+.blog-content h2 { font-size: 1.5rem; margin: 1.75rem 0 0.75rem; color: white; }
+.blog-content h3 { font-size: 1.25rem; margin: 1.5rem 0 0.5rem; color: white; }
+.blog-content p { margin-bottom: 1.25rem; line-height: 1.8; }
+.blog-content ul, .blog-content ol { padding-left: 1.5rem; margin-bottom: 1.25rem; }
+.blog-content li { margin-bottom: 0.5rem; }
+.blog-content img { max-width: 100%; border-radius: 0.75rem; margin: 1.5rem 0; }
+.blog-content blockquote {
+  border-left: 3px solid var(--color-teal-500);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  background: rgba(0, 201, 167, 0.05);
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+.blog-content a { color: var(--color-teal-500); text-decoration: underline; }
+.blog-content code {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.9rem;
+}
+.blog-content pre {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+}
+.blog-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+.blog-content th, .blog-content td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.blog-content th {
+  color: white;
+  font-weight: 600;
+}
+
+/* ============================================
+   RESPONSIVE UTILITIES
+   ============================================ */
+
+@media (max-width: 768px) {
+  .section {
+    padding: 3.5rem 0;
+  }
+  
+  h1 { font-size: 2rem !important; }
+  h2 { font-size: 1.5rem !important; }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 1rem;
+  }
+}
