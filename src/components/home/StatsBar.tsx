@@ -42,19 +42,19 @@ export default function StatsBar() {
     <section className="relative z-10 -mt-16 pb-8">
       <div className="container">
         <ScrollReveal>
-          <div className="glass-strong rounded-2xl p-6 md:p-10">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+          <div className="glass-strong rounded-2xl p-8 md:p-10 glow-teal">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-8 gap-x-4">
               {stats.map((stat, index) => {
                 const Icon = stat.icon;
                 return (
                   <div
                     key={index}
-                    className="text-center group"
+                    className="text-center group lg:px-4 lg:border-l lg:border-white/[0.06] lg:first:border-l-0"
                   >
-                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-teal-500/10 text-teal-500 mb-3 group-hover:bg-teal-500/20 transition-colors duration-300">
+                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-teal-500/10 text-teal-400 mb-4 ring-1 ring-teal-500/20 group-hover:bg-teal-500/20 group-hover:scale-110 transition-all duration-300">
                       <Icon className="w-6 h-6" />
                     </div>
-                    <div className="text-3xl md:text-4xl font-bold font-heading text-white mb-1">
+                    <div className="text-4xl md:text-5xl font-bold font-heading gradient-text-teal mb-1.5 tracking-tight">
                       {stat.isSpecial ? (
                         <span>
                           <AnimatedCounter target={stat.value} duration={1000} />

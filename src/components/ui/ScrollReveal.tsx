@@ -17,13 +17,15 @@ export default function ScrollReveal({
   children,
   className = '',
   delay = 0,
-  duration = 0.6,
+  duration = 0.7,
   direction = 'up',
-  distance = 40,
+  distance = 28,
   once = true,
 }: ScrollRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once, margin: '-60px' });
+  // Trigger a touch before the element fully enters so content is never
+  // caught half-faded; reveal once and stay visible.
+  const isInView = useInView(ref, { once, margin: '0px 0px -10% 0px' });
 
   const directionMap: Record<string, { x?: number; y?: number }> = {
     up: { y: distance },
