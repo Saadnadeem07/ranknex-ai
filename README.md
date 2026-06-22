@@ -7,21 +7,27 @@ A complete, production-ready, full-stack website for **RankNex AI** — an AI-po
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5-blue?logo=typescript&logoColor=white" />
   <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind_CSS-4-38BDF8?logo=tailwindcss&logoColor=white" />
   <img alt="Prisma" src="https://img.shields.io/badge/Prisma-6-2D3748?logo=prisma&logoColor=white" />
+  <img alt="Supabase" src="https://img.shields.io/badge/Supabase-Postgres-3FCF8E?logo=supabase&logoColor=white" />
+  <img alt="Cloudinary" src="https://img.shields.io/badge/Cloudinary-media-3448C5?logo=cloudinary&logoColor=white" />
 </p>
+
+> Working on this codebase with Claude Code or another AI assistant? Start with **[CLAUDE.md](CLAUDE.md)** — it documents the architecture, conventions, and the non-obvious gotchas.
 
 ## Tech Stack
 
-| Layer       | Technology                                   |
-| ----------- | -------------------------------------------- |
-| Framework   | Next.js 15 (App Router)                      |
-| Language    | TypeScript                                   |
-| Styling     | Tailwind CSS v4                              |
-| Database    | SQLite via Prisma ORM (swap-able to Postgres/MySQL) |
-| Auth        | NextAuth.js (Credentials provider, JWT)      |
-| Editor      | Tiptap (rich-text blog/case-study editor)    |
-| Animations  | Framer Motion + CSS                          |
-| Icons       | Lucide React                                 |
-| Fonts       | Inter + Outfit (Google Fonts)                |
+| Layer        | Technology                                        |
+| ------------ | ------------------------------------------------- |
+| Framework    | Next.js 15 (App Router)                           |
+| Language     | TypeScript                                        |
+| Styling      | Tailwind CSS v4                                   |
+| Database     | PostgreSQL (Supabase) via Prisma ORM              |
+| Media        | Cloudinary (image/video upload, optimization, CDN)|
+| Auth         | NextAuth.js (Credentials provider, JWT)           |
+| Editor       | Tiptap (rich-text blog/case-study editor)         |
+| Animations   | Framer Motion + CSS                               |
+| Icons        | Lucide React                                      |
+| Fonts        | Inter + Outfit (Google Fonts)                     |
+| Hosting      | Vercel                                            |
 
 ## Getting Started
 
@@ -29,6 +35,8 @@ A complete, production-ready, full-stack website for **RankNex AI** — an AI-po
 
 - Node.js 18+
 - npm
+- A [Supabase](https://supabase.com) project (Postgres database)
+- A [Cloudinary](https://cloudinary.com) account (media uploads)
 
 ### 1. Install dependencies
 
@@ -38,21 +46,25 @@ npm install
 
 ### 2. Configure environment
 
-Copy the example file and adjust the values:
-
 ```bash
 cp .env.example .env
 ```
 
-The defaults run against a local SQLite file (`prisma/dev.db`) — no database server required.
-See the [Environment Variables](#environment-variables) section below for details.
+Fill in `.env` with your Supabase and Cloudinary credentials — see
+[Environment Variables](#environment-variables).
 
 ### 3. Set up the database
 
 ```bash
-npm run db:generate   # Generate the Prisma client
-npm run db:push       # Create the SQLite schema
-npm run db:seed       # Seed admin user, categories & sample content
+npm run db:setup     # generate client + push schema + seed (one shot)
+```
+
+Or run the steps individually:
+
+```bash
+npm run db:generate  # Generate the Prisma client
+npm run db:push      # Create the schema in Supabase
+npm run db:seed      # Seed admin user, categories & sample content
 ```
 
 ### 4. Run the development server
@@ -65,21 +77,31 @@ Visit [http://localhost:3000](http://localhost:3000).
 
 ## Environment Variables
 
-| Variable          | Description                                                        | Example                                  |
-| ----------------- | ----------------------------------------------------------------- | ---------------------------------------- |
-| `DATABASE_URL`    | Prisma connection string. SQLite by default.                      | `file:./dev.db`                          |
-| `NEXTAUTH_SECRET` | Secret used to sign auth/JWT tokens. **Generate a strong value.** | `openssl rand -base64 32`                |
-| `NEXTAUTH_URL`    | Canonical site URL. Used for auth callbacks, sitemap & OG tags.   | `http://localhost:3000` (prod: your domain) |
-| `UPLOAD_DIR`      | Upload folder under `public/`.                                    | `uploads`                                |
+| Variable                  | Description                                                              |
+| ------------------------- | ----------------------------------------------------------------------- |
+| `DATABASE_URL`            | Supabase **transaction pooler** URL (port 6543) + `?pgbouncer=true` — used by the app |
+| `DIRECT_URL`              | Supabase **direct/session** URL (port 5432) — used by Prisma for migrations |
+| `NEXTAUTH_SECRET`         | Secret signing auth/JWT tokens. Generate: `openssl rand -base64 32`      |
+| `NEXTAUTH_URL`            | Canonical site URL (`http://localhost:3000` locally, your domain in prod) |
+| `CLOUDINARY_CLOUD_NAME`   | Cloudinary cloud name                                                   |
+| `CLOUDINARY_API_KEY`      | Cloudinary API key                                                      |
+| `CLOUDINARY_API_SECRET`   | Cloudinary API secret (**server-side only**)                            |
+| `CLOUDINARY_FOLDER`       | (Optional) folder for uploads. Default: `ranknex`                       |
 
-> In production, set `NEXTAUTH_URL` to your real domain so canonical URLs, the
-> sitemap, and Open Graph/Schema.org tags resolve correctly.
+> Where to find them: Supabase → *Project Settings → Database → Connection string*;
+> Cloudinary → *dashboard / API keys*. Add the same variables to your Vercel project
+> (*Settings → Environment Variables*) for production.
+
+> **Graceful degradation:** the public marketing site builds and serves even when
+> these are unset (database reads fall back to empty states). The **admin panel**,
+> dynamic **blog/case-study** content, **contact-form storage**, and **uploads**
+> require the credentials above.
 
 ## Admin Access
 
 The admin panel is **hidden** from public navigation.
 
-- **Logo click:** click the RankNex AI logo **6 times** within 3 seconds to reveal the admin login.
+- **Logo click:** click the RankNex AI logo **6 times** within 3 seconds.
 - **Direct URL:** navigate to `/admin`.
 
 ### Default seeded credentials
@@ -87,9 +109,18 @@ The admin panel is **hidden** from public navigation.
 - **Username:** `admin`
 - **Password:** `RankNex@2024`
 
-> ⚠️ **Change these before any public deployment.** Re-seed with a new password
-> (`prisma/seed.ts`) or update the `admin_users` row directly, and set a unique
+> ⚠️ **Change these before any public use.** Update the seeded password in
+> `prisma/seed.ts` (or the `admin_users` row directly) and set a strong
 > `NEXTAUTH_SECRET`.
+
+### What the admin does
+
+| Section      | Purpose                                                          |
+| ------------ | --------------------------------------------------------------- |
+| Dashboard    | Overview stats (posts, case studies, unread messages)           |
+| Blog Posts   | CRUD for blog articles (rich text, Cloudinary images, SEO meta) |
+| Case Studies | CRUD for case studies (challenge / strategy / results / metrics)|
+| Submissions  | Inbox of contact-form messages                                  |
 
 ## Project Structure
 
@@ -104,14 +135,9 @@ src/
 │   ├── contact/            # Contact page with form
 │   ├── uk/  ·  us/         # Market landing pages
 │   ├── admin/              # Hidden admin panel (CRUD)
-│   └── api/                # API routes
-├── components/             # Reusable components
-│   ├── layout/             # Header, Footer, WhatsApp button
-│   ├── home/               # Homepage sections
-│   ├── ui/                 # Shared UI primitives
-│   ├── blog/               # Blog components
-│   └── admin/              # Admin components
-├── lib/                    # Prisma client, auth, SEO, utils
+│   └── api/                # API routes (blogs, contact, upload, …)
+├── components/             # Reusable components (layout, home, ui, blog, admin)
+├── lib/                    # Prisma client, auth, SEO, Cloudinary, utils
 └── types/                  # Shared TypeScript types
 
 prisma/                     # Schema & seed script
@@ -120,46 +146,41 @@ public/                     # Static assets, robots.txt, sitemap.xml
 
 ## Available Scripts
 
-| Script                | Description                          |
-| --------------------- | ------------------------------------ |
-| `npm run dev`         | Start the development server         |
-| `npm run build`       | Production build                     |
-| `npm run start`       | Run the production build             |
-| `npm run lint`        | Lint with ESLint                     |
-| `npm run db:generate` | Generate the Prisma client           |
-| `npm run db:push`     | Push the schema to the database      |
-| `npm run db:migrate`  | Create & apply a migration           |
-| `npm run db:seed`     | Seed the database with initial data  |
+| Script                | Description                              |
+| --------------------- | ---------------------------------------- |
+| `npm run dev`         | Start the development server             |
+| `npm run build`       | Production build                         |
+| `npm run start`       | Run the production build                 |
+| `npm run lint`        | Lint with ESLint                         |
+| `npm run db:setup`    | Generate client + push schema + seed     |
+| `npm run db:generate` | Generate the Prisma client               |
+| `npm run db:push`     | Push the schema to the database          |
+| `npm run db:seed`     | Seed the database with initial data      |
 
 ## Features
 
 - 14+ pages, each with unique SEO metadata
-- Dynamic blog system backed by Prisma
+- Dynamic blog system backed by Postgres (Prisma)
 - Hidden admin panel with CRUD for blogs & case studies
 - Contact form with database persistence
-- Animated, responsive, conversion-focused design
+- Cloudinary-backed image/video uploads (optimized + CDN)
+- Animated, fully responsive, conversion-focused design
 - Floating WhatsApp button
 - Schema.org markup (Organization, Article, Service)
 - `robots.txt` + `sitemap.xml`
 - Dedicated UK and US market landing pages
 
-## Deployment
+## Deployment (Vercel)
 
-### Vercel (recommended)
+1. Push this repository to GitHub and import it into Vercel.
+2. Add all [environment variables](#environment-variables) under
+   *Settings → Environment Variables*.
+3. Set `NEXTAUTH_URL` to your production domain.
+4. Deploy. Run `npm run db:setup` once (locally, pointed at the Supabase DB) to
+   create and seed the schema.
 
-1. Push this repository to GitHub.
-2. Import the project into Vercel.
-3. Add the environment variables from `.env.example`.
-4. For production, point `DATABASE_URL` at a hosted database (e.g. Postgres) and
-   update the Prisma `provider` in `prisma/schema.prisma` accordingly — SQLite is
-   intended for local development.
-
-### Self-hosted (VPS)
-
-```bash
-npm run build
-npm run start
-```
+See **[CONTRIBUTING.md](CONTRIBUTING.md)** for the development workflow and
+**[CLAUDE.md](CLAUDE.md)** for architecture notes and conventions.
 
 ## License
 
