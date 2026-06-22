@@ -1,6 +1,3 @@
-'use client';
-
-import { motion } from 'framer-motion';
 import { TrendingUp, Search, Users } from 'lucide-react';
 
 const tiles = [
@@ -11,14 +8,14 @@ const tiles = [
 
 const bars = [38, 52, 46, 64, 58, 76, 70, 88];
 
+/**
+ * Static analytics-dashboard visual. Renders in final state (no per-element
+ * JS animation) so it adds no main-thread work on landing — just one cheap
+ * CSS fade-in on the whole panel.
+ */
 export default function HeroVisual() {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 48 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      className="relative mx-auto mt-16 w-full max-w-3xl"
-    >
+    <div className="relative mx-auto mt-16 w-full max-w-3xl animate-fade-up" style={{ animationDelay: '0.4s' }}>
       {/* Ambient glow */}
       <div className="absolute -inset-6 rounded-[2.5rem] bg-teal-500/10 blur-3xl pointer-events-none" />
 
@@ -61,23 +58,17 @@ export default function HeroVisual() {
                     <stop offset="100%" stopColor="#00C9A7" stopOpacity="0" />
                   </linearGradient>
                 </defs>
-                <motion.path
+                <path
                   d="M0 100 L40 92 L80 96 L120 74 L160 78 L200 52 L240 40 L280 30 L320 12 L320 120 L0 120 Z"
                   fill="url(#heroArea)"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 1, delay: 1.9 }}
                 />
-                <motion.path
+                <path
                   d="M0 100 L40 92 L80 96 L120 74 L160 78 L200 52 L240 40 L280 30 L320 12"
                   fill="none"
                   stroke="#00E6BF"
                   strokeWidth="2.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  initial={{ pathLength: 0 }}
-                  animate={{ pathLength: 1 }}
-                  transition={{ duration: 1.6, delay: 1, ease: 'easeInOut' }}
                 />
               </svg>
             </div>
@@ -85,13 +76,10 @@ export default function HeroVisual() {
             {/* Bar chart */}
             <div className="flex items-end justify-between gap-1.5 h-28 sm:h-32 pb-1">
               {bars.map((h, i) => (
-                <motion.span
+                <span
                   key={i}
-                  className="flex-1 rounded-t-sm bg-gradient-to-t from-teal-500/40 to-cyan-400/70 origin-bottom"
+                  className="flex-1 rounded-t-sm bg-gradient-to-t from-teal-500/40 to-cyan-400/70"
                   style={{ height: `${h}%` }}
-                  initial={{ scaleY: 0 }}
-                  animate={{ scaleY: 1 }}
-                  transition={{ duration: 0.5, delay: 1.1 + i * 0.05, ease: 'easeOut' }}
                 />
               ))}
             </div>
@@ -112,13 +100,8 @@ export default function HeroVisual() {
         </div>
       </div>
 
-      {/* Floating accent cards */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, delay: 1.5 }}
-        className="absolute -left-4 sm:-left-8 top-24 animate-float"
-      >
+      {/* Floating accent cards (static position) */}
+      <div className="absolute -left-4 sm:-left-8 top-24">
         <div className="flex items-center gap-2.5 glass-strong rounded-xl border border-white/10 px-3.5 py-2.5 shadow-xl shadow-black/30">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-teal-500/15 text-teal-400">
             <Search className="w-4 h-4" />
@@ -128,14 +111,9 @@ export default function HeroVisual() {
             <p className="text-[10px] text-slate-400 mt-1">Google Search</p>
           </div>
         </div>
-      </motion.div>
+      </div>
 
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, delay: 1.7 }}
-        className="absolute -right-4 sm:-right-8 bottom-20 animate-float-slow"
-      >
+      <div className="absolute -right-4 sm:-right-8 bottom-20">
         <div className="flex items-center gap-2.5 glass-strong rounded-xl border border-white/10 px-3.5 py-2.5 shadow-xl shadow-black/30">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-cyan-400/15 text-cyan-400">
             <Users className="w-4 h-4" />
@@ -145,7 +123,7 @@ export default function HeroVisual() {
             <p className="text-[10px] text-slate-400 mt-1">This month</p>
           </div>
         </div>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 }
