@@ -100,8 +100,9 @@ export default function HeroVisual() {
         </div>
       </div>
 
-      {/* Floating accent cards (static position) */}
-      <div className="absolute -left-4 sm:-left-8 top-24">
+      {/* Floating accent cards — positioned over empty zones so they never
+          cover the dashboard's metrics. */}
+      <div className="absolute -left-3 sm:-left-6 top-1/2 -translate-y-1/2">
         <div className="flex items-center gap-2.5 glass-strong rounded-xl border border-white/10 px-3.5 py-2.5 shadow-xl shadow-black/30">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-teal-500/15 text-teal-400">
             <Search className="w-4 h-4" />
