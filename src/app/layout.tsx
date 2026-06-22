@@ -2,9 +2,7 @@ import type { Metadata } from 'next';
 import { Inter, Outfit } from 'next/font/google';
 import './globals.css';
 import Providers from '@/components/Providers';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
-import WhatsAppButton from '@/components/layout/WhatsAppButton';
+import SiteChrome from '@/components/layout/SiteChrome';
 import { generateOrganizationSchema, generateWebsiteSchema } from '@/lib/seo';
 
 /* ------------------------------------------------------------------ */
@@ -113,12 +111,7 @@ export default function RootLayout({
       </head>
       <body className="bg-navy-950 text-slate-300 antialiased">
         <Providers>
-          <div className="flex flex-col min-h-screen">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
-          <WhatsAppButton />
+          <SiteChrome>{children}</SiteChrome>
         </Providers>
       </body>
     </html>
