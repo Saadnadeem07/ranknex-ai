@@ -3,8 +3,11 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  // Pooled connection (PgBouncer, port 6543) — used by the app at runtime.
+  url       = env("DATABASE_URL")
+  // Direct connection (port 5432) — used by Prisma for migrations.
+  directUrl = env("DIRECT_URL")
 }
 
 model AdminUser {
