@@ -64,3 +64,39 @@ export function getWhatsAppUrl(message?: string): string {
   }
   return base;
 }
+
+export interface ParsedMetric {
+  label: string;
+  value: string;
+}
+
+/**
+ * Case-study metrics are stored either as a JSON object
+ * (e.g. {"Organic Traffic":"+340%"}) or as "Label: Value, Label2: Value2".
+ * Parse both shapes into a list of {label, value}.
+ */
+export function parseCaseStudyMetrics(metrics: string | null): ParsedMetric[] {
+  if (!metrics) return [];
+  const raw = metrics.trim();
+  if (!raw) return [];
+  try {
+    const obj = JSON.parse(raw);
+    if (obj && typeof obj === "object" && !Array.isArray(obj)) {
+      return Object.entries(obj).map(([label, value]) => ({
+        label: String(label).trim(),
+        value: String(value).trim(),
+      }));
+    }
+  } catch {
+    // not JSON — fall through to delimiter parsing
+  }
+  return raw
+    .split(",")
+    .map((pair) => {
+      const idx = pair.indexOf(":");
+      const label = idx >= 0 ? pair.slice(0, idx) : pair;
+      const value = idx >= 0 ? pair.slice(idx + 1) : "";
+      return { label: label.trim(), value: value.trim() };
+    })
+    .filter((m) => m.label || m.value);
+}
